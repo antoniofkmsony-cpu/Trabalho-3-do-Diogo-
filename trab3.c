@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 typedef struct No {
     struct No *proximo;
@@ -40,6 +41,40 @@ No *inserirInteiro(No *inicio, int valor) {
     return inicio;
 }
 
+No *inserirTexto(No *inicio, char texto[]) {
+    No *novo;
+    No *aux;
+    char *palavra;
+
+    novo = (No *) malloc(sizeof(No));
+    palavra = (char *) malloc((strlen(texto) + 1) * sizeof(char));
+
+    if (novo == NULL || palavra == NULL) {
+        printf("Erro ao alocar memoria.\n");
+        return inicio;
+    }
+
+    strcpy(palavra, texto);
+
+    novo->tipo = 2;
+    novo->dados = palavra;
+    novo->proximo = NULL;
+
+    if (inicio == NULL) {
+        return novo;
+    }
+
+    aux = inicio;
+
+    while (aux->proximo != NULL) {
+        aux = aux->proximo;
+    }
+
+    aux->proximo = novo;
+
+    return inicio;
+}
+
 void imprimirLista(No *inicio) {
     No *aux;
 
@@ -48,6 +83,9 @@ void imprimirLista(No *inicio) {
     while (aux != NULL) {
         if (aux->tipo == 1) {
             printf("Inteiro: %d\n", *((int *) aux->dados));
+        }
+        else if (aux->tipo == 2) {
+            printf("Texto: %s\n", (char *) aux->dados);
         }
 
         aux = aux->proximo;
@@ -72,10 +110,10 @@ int main() {
     inicio = NULL;
 
     inicio = inserirInteiro(inicio, 10);
+    inicio = inserirTexto(inicio, "Maria");
     inicio = inserirInteiro(inicio, 20);
-    inicio = inserirInteiro(inicio, 30);
 
-    printf("Lista de inteiros:\n");
+    printf("Lista:\n");
     imprimirLista(inicio);
 
     liberarLista(inicio);
